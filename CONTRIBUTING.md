@@ -81,7 +81,7 @@ flutter run -d windows -- --demo
 - включение/выключение механизмов;
 - несколько быстрых циклов ON → OFF;
 - отсутствие `winws2.exe` после OFF;
-- отсутствие NRPT-правил Traverceа после OFF;
+- отсутствие NRPT-правил Traverce после OFF;
 - принудительное завершение GUI во включённом состоянии;
 - повторный запуск после crash;
 - single-instance;
@@ -96,7 +96,7 @@ flutter run -d windows -- --demo
 Get-DnsClientNrptRule | Where-Object { $_.Comment -eq 'Traverce' }
 ```
 
-После штатного OFF правил Traverceа быть не должно.
+После штатного OFF правил Traverce быть не должно.
 
 ## Pull request
 
