@@ -46,17 +46,13 @@ Traverce — Windows-клиент, который объединяет три с
 
 ---
 
-## Как выглядит
+## Как устроено
 
 <p align="center">
-  <img src="docs/off.png" width="29%" alt="Traverce выключен">
-  &nbsp;&nbsp;
-  <img src="docs/on.png" width="29%" alt="Traverce включен">
-  &nbsp;&nbsp;
-  <img src="docs/settings.png" width="29%" alt="Настройки Traverce">
+  <img src="assets/github/overview.svg" width="100%" alt="Архитектура Traverce: zapret2, Smart DNS и Telegram proxy">
 </p>
 
-Интерфейс намеренно небольшой: состояние, список сервисов, диагностика и настройки. Сетевой движок не вываливается на пользователя десятками параметров.
+Traverce намеренно держит низкоуровневую сетевую механику за интерфейсом: пользователь выбирает сервисы и состояние, а lifecycle процессов, NRPT, proxy и cleanup остаётся внутри приложения. Свежие UI snapshots генерируются детерминированно в CI и прикладываются к каждому workflow run.
 
 ---
 
