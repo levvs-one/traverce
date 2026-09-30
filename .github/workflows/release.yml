@@ -128,6 +128,23 @@ jobs:
           if ($LASTEXITCODE -eq 0) { throw "uninstall left the legacy autostart task behind" }
           $global:LASTEXITCODE = 0
 
+          # Also verify the proven-absent path: an obsolete executable with no
+          # legacy task should be removed during upgrade.
+          $targetNoTask = Join-Path $env:TEMP "TraverceNoLegacyTaskSmoke"
+          if (Test-Path $targetNoTask) { Remove-Item $targetNoTask -Recurse -Force }
+          New-Item -ItemType Directory -Force -Path $targetNoTask | Out-Null
+          Set-Content -LiteralPath "$targetNoTask\prosvet.exe" -Value "legacy" -Encoding ascii
+          & schtasks.exe /Delete /TN "Prosvet" /F *> $null
+          $global:LASTEXITCODE = 0
+
+          Start-Process $setup.FullName -ArgumentList "/VERYSILENT","/NORESTART","/DIR=$targetNoTask" -Wait
+          if (-not (Test-Path "$targetNoTask\traverce.exe")) { throw "fresh upgrade executable is missing" }
+          if (Test-Path "$targetNoTask\prosvet.exe") { throw "upgrade kept unused legacy executable" }
+
+          $uninstallNoTask = Get-Item "$targetNoTask\unins000.exe"
+          Start-Process $uninstallNoTask.FullName -ArgumentList "/VERYSILENT","/NORESTART" -Wait
+          if (Test-Path "$targetNoTask\traverce.exe") { throw "second uninstall left the executable behind" }
+
       - name: Package release
         if: steps.release_check.outputs.exists != 'true'
         shell: pwsh
