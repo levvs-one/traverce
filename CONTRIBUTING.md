@@ -1,6 +1,6 @@
 # Contributing
 
-Просвет — небольшой системный Windows-клиент. Для него важнее предсказуемый lifecycle и воспроизводимые проверки, чем количество функций.
+Traverce — небольшой системный Windows-клиент. Для него важнее предсказуемый lifecycle и воспроизводимые проверки, чем количество функций.
 
 ## С чего начать
 
@@ -8,7 +8,7 @@
 
 - [архитектуру](docs/architecture.md);
 - [диагностику](docs/troubleshooting.md);
-- [сравнение с zapret2](docs/prosvet-vs-zapret2.md);
+- [сравнение с zapret2](docs/traverce-vs-zapret2.md);
 - [release flow](docs/releasing.md).
 
 ## Главные инварианты
@@ -81,7 +81,7 @@ flutter run -d windows -- --demo
 - включение/выключение механизмов;
 - несколько быстрых циклов ON → OFF;
 - отсутствие `winws2.exe` после OFF;
-- отсутствие NRPT-правил Просвета после OFF;
+- отсутствие NRPT-правил Traverceа после OFF;
 - принудительное завершение GUI во включённом состоянии;
 - повторный запуск после crash;
 - single-instance;
@@ -93,10 +93,10 @@ flutter run -d windows -- --demo
 Проверка NRPT:
 
 ```powershell
-Get-DnsClientNrptRule | Where-Object { $_.Comment -eq 'Prosvet' }
+Get-DnsClientNrptRule | Where-Object { $_.Comment -eq 'Traverce' }
 ```
 
-После штатного OFF правил Просвета быть не должно.
+После штатного OFF правил Traverceа быть не должно.
 
 ## Pull request
 
