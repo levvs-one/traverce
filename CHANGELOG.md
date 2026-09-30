@@ -6,7 +6,10 @@
 
 - Upgrade installer now retargets an enabled 0.2 autostart task to `traverce.exe --background` before removing the obsolete executable.
 - If task migration fails, installer keeps the legacy executable instead of silently leaving a broken startup entry.
-- Windows CI and release smoke-tests now simulate the 0.2 → 0.3 upgrade path and verify task retargeting, executable cleanup and uninstall cleanup.
+- Legacy task lookup now distinguishes **exists**, **absent** and **unknown** states; an unexpected query failure can no longer trigger unsafe cleanup.
+- Uninstall explicitly removes a leftover legacy executable if an earlier migration had to preserve it.
+- Windows CI and release smoke-tests now cover both upgrade paths: legacy autostart present and legacy executable present without an autostart task.
+- Stale pre-Traverce UI screenshots were removed from the repository landing page; deterministic UI snapshots remain available as CI artifacts.
 
 ## 0.3.0 — 2026-09-30
 
