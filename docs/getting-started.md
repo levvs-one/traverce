@@ -4,14 +4,14 @@
 
 ## 1. Скачать
 
-Откройте [последний GitHub Release](https://github.com/levvs-one/zapret2/releases/latest).
+Откройте [последний GitHub Release](https://github.com/levvs-one/traverce/releases/latest).
 
 В релизе есть три основных файла:
 
 | Файл | Назначение |
 | --- | --- |
-| `Prosvet-<version>-Setup.exe` | рекомендуемая обычная установка |
-| `Prosvet-<version>-windows-x64.zip` | portable-сборка |
+| `Traverce-<version>-Setup.exe` | рекомендуемая обычная установка |
+| `Traverce-<version>-windows-x64.zip` | portable-сборка |
 | `SHA256SUMS.txt` | SHA-256 обоих релизных файлов |
 
 Для большинства пользователей лучше **Setup.exe**.
@@ -23,7 +23,7 @@
 PowerShell:
 
 ```powershell
-Get-FileHash .\Prosvet-*-Setup.exe -Algorithm SHA256
+Get-FileHash .\Traverce-*-Setup.exe -Algorithm SHA256
 ```
 
 Сравните результат со строкой для Setup в `SHA256SUMS.txt`.
@@ -34,17 +34,17 @@ Get-FileHash .\Prosvet-*-Setup.exe -Algorithm SHA256
 
 Это не означает автоматически, что файл вредоносный. Но не отключайте защиту вслепую:
 
-1. убедитесь, что файл скачан именно из `github.com/levvs-one/zapret2/releases`;
+1. убедитесь, что файл скачан именно из `github.com/levvs-one/traverce/releases`;
 2. при необходимости сверьте SHA-256;
 3. не используйте перепакованные сборки из случайных каналов и сайтов.
 
 ## 4. Установить
 
-Запустите `Prosvet-<version>-Setup.exe`.
+Запустите `Traverce-<version>-Setup.exe`.
 
 Приложению нужны права администратора, потому что DPI-механизм использует WinDivert, а Smart DNS — Windows NRPT.
 
-После установки Просвет появится:
+После установки Traverce появится:
 
 - в меню Пуск;
 - в списке установленных приложений Windows;
@@ -62,9 +62,9 @@ Get-FileHash .\Prosvet-*-Setup.exe -Algorithm SHA256
 
 ## 6. Telegram Desktop
 
-Если Telegram включён в Просвете:
+Если Telegram включён в Traverceе:
 
-1. включите Просвет;
+1. включите Traverce;
 2. нажмите **«Подключить Telegram Desktop»**;
 3. Telegram откроет диалог добавления локального proxy;
 4. подтвердите его.
@@ -75,7 +75,7 @@ Get-FileHash .\Prosvet-*-Setup.exe -Algorithm SHA256
 
 Если ChatGPT, Gemini, Claude или другой Smart DNS-сервис не открывается, проверьте Secure DNS / DNS-over-HTTPS в браузере.
 
-Браузерный DoH может обходить Windows NRPT, поэтому системные правила Просвета не будут использоваться.
+Браузерный DoH может обходить Windows NRPT, поэтому системные правила Traverceа не будут использоваться.
 
 Подробности: [Диагностика](troubleshooting.md).
 
@@ -83,9 +83,9 @@ Get-FileHash .\Prosvet-*-Setup.exe -Algorithm SHA256
 
 Если установка не нужна:
 
-1. скачайте `Prosvet-<version>-windows-x64.zip`;
+1. скачайте `Traverce-<version>-windows-x64.zip`;
 2. распакуйте архив в отдельную папку;
-3. запускайте `prosvet.exe`.
+3. запускайте `traverce.exe`.
 
 Не запускайте приложение прямо из ZIP.
 
@@ -93,7 +93,7 @@ Portable не означает «без системных изменений в
 
 ## Автозапуск
 
-**Настройки → Запуск → Вместе с Windows** создаёт задачу Task Scheduler `Prosvet`.
+**Настройки → Запуск → Вместе с Windows** создаёт задачу Task Scheduler `Traverce`.
 
 Опция **«Включать сразу»** применяет выбранные механизмы после запуска приложения.
 
@@ -104,22 +104,22 @@ Portable не означает «без системных изменений в
 1. скачайте новый Setup;
 2. установите поверх существующей версии.
 
-Локальные настройки хранятся отдельно в `%LOCALAPPDATA%\Prosvet`.
+Локальные настройки хранятся отдельно в `%LOCALAPPDATA%\Traverce`.
 
 ## Удаление
 
-Удалите Просвет через **Параметры Windows → Приложения**.
+Удалите Traverce через **Параметры Windows → Приложения**.
 
 Uninstaller:
 
-- завершает `prosvet.exe`;
+- завершает `traverce.exe`;
 - удаляет задачу автозапуска;
-- удаляет NRPT-правила Просвета;
-- удаляет локальные данные из `%LOCALAPPDATA%\Prosvet`.
+- удаляет NRPT-правила Traverceа;
+- удаляет локальные данные из `%LOCALAPPDATA%\Traverce`.
 
 ## Где хранится журнал
 
-`%LOCALAPPDATA%\Prosvet\prosvet.log`
+`%LOCALAPPDATA%\Traverce\traverce.log`
 
 Его также можно открыть через:
 
