@@ -35,8 +35,8 @@ List<String> nrptNamespaces(Iterable<String> domains) {
 
 String nrptRemoveScript() =>
     'Get-DnsClientNrptRule | Where-Object { '
-    '\\$_.Comment -in ${_psArray([nrptComment, legacyNrptComment])} } '
-    '| ForEach-Object { Remove-DnsClientNrptRule -Name \\$_.Name -Force }';
+    '\$_.Comment -in ${_psArray([nrptComment, legacyNrptComment])} } '
+    '| ForEach-Object { Remove-DnsClientNrptRule -Name \$_.Name -Force }';
 
 String nrptApplyScript({
   required Iterable<String> domains,
