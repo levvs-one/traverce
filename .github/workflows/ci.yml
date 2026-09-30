@@ -79,18 +79,18 @@ jobs:
           $version = (Get-Content VERSION -Raw).Trim()
           choco install innosetup --version=6.7.1 -y --no-progress
           $iscc = "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe"
-          & $iscc "/DMyAppVersion=$version" "installer\prosvet.iss"
+          & $iscc "/DMyAppVersion=$version" "installer\traverce.iss"
       - name: Smoke-test installer and uninstaller
         shell: pwsh
         run: |
           $setup = Get-Item "installer\Output\Traverce-*-Setup.exe"
           $target = Join-Path $env:TEMP "TraverceInstallSmoke"
           Start-Process $setup.FullName -ArgumentList "/VERYSILENT","/NORESTART","/DIR=$target" -Wait
-          if (-not (Test-Path "$target\prosvet.exe")) { throw "installed executable is missing" }
+          if (-not (Test-Path "$target\traverce.exe")) { throw "installed executable is missing" }
           if (-not (Test-Path "$target\engine\winws2.exe")) { throw "installed engine is missing" }
           $uninstall = Get-Item "$target\unins000.exe"
           Start-Process $uninstall.FullName -ArgumentList "/VERYSILENT","/NORESTART" -Wait
-          if (Test-Path "$target\prosvet.exe") { throw "uninstall left the executable behind" }
+          if (Test-Path "$target\traverce.exe") { throw "uninstall left the executable behind" }
       - name: Package CI artifacts
         shell: pwsh
         run: |
