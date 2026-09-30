@@ -6,7 +6,7 @@
 #define MyAppExeName "traverce.exe"
 
 [Setup]
-; Keep the legacy AppId so 0.3 upgrades the existing 0.1/0.2 installation.
+; Keep the stable AppId so patch/minor releases upgrade in place.
 AppId={{4C5B5AC7-5B75-4BE7-B1A6-03BBF8C17E29}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
@@ -41,43 +41,68 @@ Source: "..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\THIRD_PARTY_NOTICES.md"; DestDir: "{app}"; Flags: ignoreversion
 
 [InstallDelete]
-; Remove only the obsolete Start Menu group here. The legacy executable is
-; deleted after its scheduled task has been retargeted in [Code]
-function PsQuote(const Value: String): String;
-begin
-  Result := '''' + StringChangeEx(Value, '''', '''''', True) + '''';
-end;
+; Remove the obsolete Start Menu group. The legacy executable is deleted only
+; after autostart migration succeeds (or when no legacy task exists).
+Type: filesandordirs; Name: "{autoprograms}\Просвет"
 
+[Icons]
+Name: "{group}\Traverce"; Filename: "{app}\{#MyAppExeName}"
+Name: "{group}\Удалить Traverce"; Filename: "{uninstallexe}"
+
+[Run]
+Filename: "{app}\{#MyAppExeName}"; Description: "Запустить Traverce"; Flags: nowait postinstall skipifsilent
+
+[UninstallRun]
+Filename: "{sys}\schtasks.exe"; Parameters: "/Delete /TN ""Traverce"" /F"; Flags: runhidden waituntilterminated; RunOnceId: "RemoveTraverceTask"
+Filename: "{sys}\schtasks.exe"; Parameters: "/Delete /TN ""Prosvet"" /F"; Flags: runhidden waituntilterminated; RunOnceId: "RemoveLegacyTask"
+Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; Parameters: "-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command ""$ErrorActionPreference='SilentlyContinue'; Get-DnsClientNrptRule | Where-Object {{ $_.Comment -in @('Traverce','Prosvet') } | ForEach-Object {{ Remove-DnsClientNrptRule -Name $_.Name -Force }; Clear-DnsClientCache"""; Flags: runhidden waituntilterminated; RunOnceId: "RemoveTraverceNrpt"
+
+[UninstallDelete]
+Type: files; Name: "{app}\prosvet.exe"
+Type: filesandordirs; Name: "{localappdata}\Traverce"
+Type: filesandordirs; Name: "{localappdata}\Prosvet"
+
+[Code]
 procedure MigrateLegacyAutostart();
 var
+  ScriptPath, Script, LegacyExe, NewExe, Args: String;
   ResultCode: Integer;
-  LegacyExe, NewExe, Script, Args: String;
   Started: Boolean;
 begin
   LegacyExe := ExpandConstant('{app}\prosvet.exe');
   NewExe := ExpandConstant('{app}\{#MyAppExeName}');
+  ScriptPath := ExpandConstant('{tmp}\traverce-migrate-autostart.ps1');
 
-  { Use the ScheduledTasks PowerShell API instead of schtasks /Change.
-    /Change may request credentials for an existing task and can hang a silent
-    installer. Set-ScheduledTask updates only the action and preserves the
-    existing trigger, principal, enabled state and settings. }
   Script :=
-    '$ErrorActionPreference = ''Stop''; ' +
-    '$task = Get-ScheduledTask -TaskName ''Prosvet'' -ErrorAction SilentlyContinue; ' +
-    'if ($null -ne $task) { ' +
-      '$action = New-ScheduledTaskAction -Execute ' + PsQuote(NewExe) +
-        ' -Argument ''--background''; ' +
-      'Set-ScheduledTask -TaskName ''Prosvet'' -Action $action -ErrorAction Stop | Out-Null; ' +
-    '}';
+    'param([Parameter(Mandatory=$true)][string]$ExePath)' + #13#10 +
+    '$ErrorActionPreference = ''Stop''' + #13#10 +
+    '$task = Get-ScheduledTask -TaskName ''Prosvet'' -ErrorAction SilentlyContinue' + #13#10 +
+    'if ($null -ne $task) {' + #13#10 +
+    '  $action = New-ScheduledTaskAction -Execute $ExePath -Argument ''--background''' + #13#10 +
+    '  Set-ScheduledTask -TaskName ''Prosvet'' -Action $action -ErrorAction Stop | Out-Null' + #13#10 +
+    '}' + #13#10;
+
+  if not SaveStringToFile(ScriptPath, Script, False) then
+  begin
+    Log('Could not write autostart migration helper; keeping legacy executable.');
+    exit;
+  end;
 
   Args :=
-    '-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "' +
-    StringChangeEx(Script, '"', '\"', True) + '"';
+    '-NoProfile -NonInteractive -ExecutionPolicy Bypass -File ' +
+    AddQuotes(ScriptPath) + ' -ExePath ' + AddQuotes(NewExe);
 
   Started :=
-    Exec(ExpandConstant('{sys}\WindowsPowerShell\v1.0\powershell.exe'),
-         Args,
-         '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+    Exec(
+      ExpandConstant('{sys}\WindowsPowerShell\v1.0\powershell.exe'),
+      Args,
+      '',
+      SW_HIDE,
+      ewWaitUntilTerminated,
+      ResultCode
+    );
+
+  DeleteFile(ScriptPath);
 
   if Started and (ResultCode = 0) then
   begin
@@ -100,11 +125,21 @@ function InitializeUninstall(): Boolean;
 var
   ResultCode: Integer;
 begin
-  Exec(ExpandConstant('{sys}\taskkill.exe'),
-       '/IM traverce.exe /T /F',
-       '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
-  Exec(ExpandConstant('{sys}\taskkill.exe'),
-       '/IM prosvet.exe /T /F',
-       '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  Exec(
+    ExpandConstant('{sys}\taskkill.exe'),
+    '/IM traverce.exe /T /F',
+    '',
+    SW_HIDE,
+    ewWaitUntilTerminated,
+    ResultCode
+  );
+  Exec(
+    ExpandConstant('{sys}\taskkill.exe'),
+    '/IM prosvet.exe /T /F',
+    '',
+    SW_HIDE,
+    ewWaitUntilTerminated,
+    ResultCode
+  );
   Result := True;
 end;
