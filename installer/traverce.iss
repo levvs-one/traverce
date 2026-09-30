@@ -58,6 +58,7 @@ Filename: "{sys}\schtasks.exe"; Parameters: "/Delete /TN ""Prosvet"" /F"; Flags:
 Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; Parameters: "-NoProfile -ExecutionPolicy Bypass -Command ""$ErrorActionPreference='SilentlyContinue'; Get-DnsClientNrptRule | Where-Object {{ $_.Comment -in @('Traverce','Prosvet') } | ForEach-Object {{ Remove-DnsClientNrptRule -Name $_.Name -Force }; Clear-DnsClientCache"""; Flags: runhidden waituntilterminated
 
 [UninstallDelete]
+Type: files; Name: "{app}\prosvet.exe"
 Type: filesandordirs; Name: "{localappdata}\Traverce"
 Type: filesandordirs; Name: "{localappdata}\Prosvet"
 
@@ -65,19 +66,33 @@ Type: filesandordirs; Name: "{localappdata}\Prosvet"
 procedure MigrateLegacyAutostart();
 var
   QueryCode, ChangeCode: Integer;
-  LegacyExe, NewExe, ChangeArgs: String;
-  HasLegacyTask: Boolean;
+  LegacyExe, NewExe, ChangeArgs, QueryArgs: String;
+  QueryStarted: Boolean;
 begin
   LegacyExe := ExpandConstant('{app}\prosvet.exe');
   NewExe := ExpandConstant('{app}\{#MyAppExeName}');
 
-  HasLegacyTask :=
-    Exec(ExpandConstant('{sys}\schtasks.exe'),
-         '/Query /TN "Prosvet"',
-         '', SW_HIDE, ewWaitUntilTerminated, QueryCode) and
-    (QueryCode = 0);
+  { Exit 0 = task exists, 10 = task definitely absent, anything else = unknown. }
+  QueryArgs :=
+    '-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "' +
+    '$ErrorActionPreference = ''Stop''; ' +
+    'try { ' +
+    '$t = Get-ScheduledTask -TaskName ''Prosvet'' -ErrorAction SilentlyContinue; ' +
+    'if ($null -eq $t) { exit 10 } else { exit 0 } ' +
+    '} catch { exit 20 }"';
 
-  if HasLegacyTask then
+  QueryStarted :=
+    Exec(ExpandConstant('{sys}\WindowsPowerShell\v1.0\powershell.exe'),
+         QueryArgs,
+         '', SW_HIDE, ewWaitUntilTerminated, QueryCode);
+
+  if not QueryStarted then
+  begin
+    Log('Could not query legacy autostart state; keeping legacy executable.');
+    exit;
+  end;
+
+  if QueryCode = 0 then
   begin
     ChangeArgs :=
       '/Change /TN "Prosvet" /TR "\"' + NewExe + '\" --background"';
@@ -96,10 +111,14 @@ begin
       Log('Legacy autostart task could not be retargeted; keeping legacy executable.');
     end;
   end
-  else
+  else if QueryCode = 10 then
   begin
     if FileExists(LegacyExe) and not DeleteFile(LegacyExe) then
       Log('Could not delete unused legacy executable: ' + LegacyExe);
+  end
+  else
+  begin
+    Log('Legacy autostart state is unknown; keeping legacy executable.');
   end;
 end;
 
