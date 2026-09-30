@@ -41,9 +41,8 @@ Source: "..\LICENSE"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\THIRD_PARTY_NOTICES.md"; DestDir: "{app}"; Flags: ignoreversion
 
 [InstallDelete]
-; 0.1/0.2 shipped prosvet.exe. The same AppId upgrades in-place, so remove the
-; obsolete binary and old Start Menu group explicitly.
-Type: files; Name: "{app}\prosvet.exe"
+; Remove only the obsolete Start Menu group here. The legacy executable is
+; deleted after its scheduled task has been retargeted in [Code].
 Type: filesandordirs; Name: "{autoprograms}\Просвет"
 
 [Icons]
@@ -63,6 +62,53 @@ Type: filesandordirs; Name: "{localappdata}\Traverce"
 Type: filesandordirs; Name: "{localappdata}\Prosvet"
 
 [Code]
+procedure MigrateLegacyAutostart();
+var
+  QueryCode, ChangeCode: Integer;
+  LegacyExe, NewExe, ChangeArgs: String;
+  HasLegacyTask: Boolean;
+begin
+  LegacyExe := ExpandConstant('{app}\prosvet.exe');
+  NewExe := ExpandConstant('{app}\{#MyAppExeName}');
+
+  HasLegacyTask :=
+    Exec(ExpandConstant('{sys}\schtasks.exe'),
+         '/Query /TN "Prosvet"',
+         '', SW_HIDE, ewWaitUntilTerminated, QueryCode) and
+    (QueryCode = 0);
+
+  if HasLegacyTask then
+  begin
+    ChangeArgs :=
+      '/Change /TN "Prosvet" /TR "\"' + NewExe + '\" --background"';
+
+    if Exec(ExpandConstant('{sys}\schtasks.exe'),
+            ChangeArgs,
+            '', SW_HIDE, ewWaitUntilTerminated, ChangeCode) and
+       (ChangeCode = 0) then
+    begin
+      Log('Retargeted legacy autostart task to Traverce.');
+      if FileExists(LegacyExe) and not DeleteFile(LegacyExe) then
+        Log('Could not delete legacy executable after task migration: ' + LegacyExe);
+    end
+    else
+    begin
+      Log('Legacy autostart task could not be retargeted; keeping legacy executable.');
+    end;
+  end
+  else
+  begin
+    if FileExists(LegacyExe) and not DeleteFile(LegacyExe) then
+      Log('Could not delete unused legacy executable: ' + LegacyExe);
+  end;
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if CurStep = ssPostInstall then
+    MigrateLegacyAutostart();
+end;
+
 function InitializeUninstall(): Boolean;
 var
   ResultCode: Integer;
