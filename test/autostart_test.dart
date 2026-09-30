@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:prosvet/src/platform/autostart.dart';
-import 'package:prosvet/src/platform/shell.dart';
+import 'package:traverce/src/platform/autostart.dart';
+import 'package:traverce/src/platform/shell.dart';
 
 class _FakeShell implements Shell {
   final calls = <({String executable, List<String> args})>[];
@@ -20,53 +20,63 @@ class _FakeShell implements Shell {
 }
 
 void main() {
-  test(
-    'autostart creates one elevated background task with quoted exe',
-    () async {
-      final shell = _FakeShell();
-      const exe = r'C:\Program Files\Prosvet\prosvet.exe';
-      final autostart = Autostart(shell, exe);
-
-      await autostart.setEnabled(true);
-
-      expect(shell.calls, hasLength(1));
-      expect(shell.calls.single.executable, 'schtasks.exe');
-      expect(shell.calls.single.args, [
-        '/Create',
-        '/TN',
-        'Prosvet',
-        '/TR',
-        '"$exe" --background',
-        '/SC',
-        'ONLOGON',
-        '/RL',
-        'HIGHEST',
-        '/F',
-      ]);
-    },
-  );
-
-  test('autostart deletion removes the same scheduled task', () async {
+  test('autostart creates Traverce task and removes legacy Prosvet task', () async {
     final shell = _FakeShell();
-    final autostart = Autostart(shell, r'C:\Prosvet\prosvet.exe');
+    const exe = r'C:\Program Files\Traverce\traverce.exe';
+    final autostart = Autostart(shell, exe);
+
+    await autostart.setEnabled(true);
+
+    expect(shell.calls.first.args, [
+      '/Create',
+      '/TN',
+      'Traverce',
+      '/TR',
+      '"$exe" --background',
+      '/SC',
+      'ONLOGON',
+      '/RL',
+      'HIGHEST',
+      '/F',
+    ]);
+    expect(
+      shell.calls.any((c) => c.args.join(' ') == '/Delete /TN Prosvet /F'),
+      isTrue,
+    );
+  });
+
+  test('autostart disable clears current and legacy tasks', () async {
+    final shell = _FakeShell();
+    final autostart = Autostart(shell, r'C:\Traverce\traverce.exe');
 
     await autostart.setEnabled(false);
 
-    expect(shell.calls.single.executable, 'schtasks.exe');
-    expect(shell.calls.single.args, ['/Delete', '/TN', 'Prosvet', '/F']);
+    expect(
+      shell.calls.where((c) => c.args.first == '/Delete').map((c) => c.args),
+      containsAll([
+        ['/Delete', '/TN', 'Traverce', '/F'],
+        ['/Delete', '/TN', 'Prosvet', '/F'],
+      ]),
+    );
   });
 
-  test('autostart surfaces Task Scheduler errors', () async {
+  test('isEnabled recognizes legacy task during upgrade', () async {
     final shell = _FakeShell();
-    shell.results['schtasks.exe /Delete /TN Prosvet /F'] = const ShellResult(
-      1,
-      '',
-      'access denied',
-    );
-    final autostart = Autostart(shell, r'C:\Prosvet\prosvet.exe');
+    shell.results['schtasks.exe /Query /TN Traverce'] =
+        const ShellResult(1, '', 'not found');
+    final autostart = Autostart(shell, r'C:\Traverce\traverce.exe');
+
+    expect(await autostart.isEnabled(), isTrue);
+  });
+
+  test('autostart surfaces Task Scheduler create errors', () async {
+    final shell = _FakeShell();
+    shell.results['schtasks.exe /Create /TN Traverce /TR "C:\\Traverce\\traverce.exe" --background /SC ONLOGON /RL HIGHEST /F'] =
+        const ShellResult(1, '', 'access denied');
+    final autostart = Autostart(shell, r'C:\Traverce\traverce.exe');
 
     expect(
-      () => autostart.setEnabled(false),
+      () => autostart.setEnabled(true),
       throwsA(
         isA<StateError>().having((e) => e.message, 'message', 'access denied'),
       ),
