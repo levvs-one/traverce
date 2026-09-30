@@ -1,7 +1,7 @@
 name: traverce
 description: "Traverce — локальный Windows-клиент для точечного доступа к сервисам без системного VPN."
 publish_to: 'none'
-version: 0.3.0+3
+version: 0.3.1+4
 
 environment:
   sdk: ^3.13.0
