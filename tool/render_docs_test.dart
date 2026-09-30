@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:prosvet/src/catalog/services.dart';
-import 'package:prosvet/src/core/backend.dart';
-import 'package:prosvet/src/core/controller.dart';
-import 'package:prosvet/src/core/settings.dart';
-import 'package:prosvet/src/ui/home_page.dart';
-import 'package:prosvet/src/ui/settings_page.dart';
-import 'package:prosvet/src/ui/theme.dart';
+import 'package:traverce/src/catalog/services.dart';
+import 'package:traverce/src/core/backend.dart';
+import 'package:traverce/src/core/controller.dart';
+import 'package:traverce/src/core/settings.dart';
+import 'package:traverce/src/ui/home_page.dart';
+import 'package:traverce/src/ui/settings_page.dart';
+import 'package:traverce/src/ui/theme.dart';
 
 class _SnapshotBackend implements Backend {
   bool _telegram = false;
@@ -97,7 +97,7 @@ Future<void> _capture(
 Widget _snapshotApp(Widget home) {
   return MaterialApp(
     debugShowCheckedModeBanner: false,
-    theme: AppTheme.light(fontFamily: 'ProsvetDocs'),
+    theme: AppTheme.light(fontFamily: 'TraverceDocs'),
     home: home,
   );
 }
@@ -109,13 +109,13 @@ void main() {
     addTearDown(tester.view.resetDevicePixelRatio);
     addTearDown(tester.view.resetPhysicalSize);
 
-    final textFont = Platform.environment['PROSVET_DOC_FONT'];
-    final iconFont = Platform.environment['PROSVET_ICON_FONT'];
+    final textFont = Platform.environment['TRAVERCE_DOC_FONT'];
+    final iconFont = Platform.environment['TRAVERCE_ICON_FONT'];
     if (textFont == null || iconFont == null) {
       throw StateError('Snapshot font paths were not provided');
     }
     await tester.runAsync(() async {
-      await _loadFont('ProsvetDocs', textFont);
+      await _loadFont('TraverceDocs', textFont);
       await _loadFont('MaterialIcons', iconFont);
     });
 
