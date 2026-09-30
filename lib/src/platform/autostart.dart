@@ -20,6 +20,18 @@ class Autostart {
   Future<bool> isEnabled() async =>
       await _exists(taskName) || await _exists(legacyTaskName);
 
+  Future<void> _deleteIfPresent(String name, {bool bestEffort = false}) async {
+    if (!await _exists(name)) return;
+    final result = await _shell.run('schtasks.exe', ['/Delete', '/TN', name, '/F']);
+    if (!result.ok && !bestEffort) {
+      throw StateError(
+        result.stderr.trim().isEmpty
+            ? result.stdout.trim()
+            : result.stderr.trim(),
+      );
+    }
+  }
+
   Future<void> setEnabled(bool on) async {
     if (on) {
       final created = await _shell.run('schtasks.exe', [
@@ -42,13 +54,11 @@ class Autostart {
         );
       }
 
-      // Best-effort migration from the pre-0.3 task name.
-      await _shell.run('schtasks.exe', ['/Delete', '/TN', legacyTaskName, '/F']);
+      await _deleteIfPresent(legacyTaskName, bestEffort: true);
       return;
     }
 
-    // Disabling autostart is intentionally idempotent and clears both names.
-    await _shell.run('schtasks.exe', ['/Delete', '/TN', taskName, '/F']);
-    await _shell.run('schtasks.exe', ['/Delete', '/TN', legacyTaskName, '/F']);
+    await _deleteIfPresent(taskName);
+    await _deleteIfPresent(legacyTaskName);
   }
 }
