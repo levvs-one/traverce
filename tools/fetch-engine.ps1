@@ -1,5 +1,5 @@
 # Downloads the pinned zapret2 release and assembles the engine directory
-# that is bundled next to prosvet.exe.
+# that is bundled next to traverce.exe.
 param(
   [string]$Out = "build/engine"
 )
@@ -10,7 +10,7 @@ $Sha256 = "f585590bea6da82ac2c74926f6ac17e6204ee8b53e455c2ba2edae0c58c5d4ac"
 $Url = "https://github.com/bol-van/zapret2/releases/download/$Version/zapret2-$Version.zip"
 
 $root = Split-Path -Parent $PSScriptRoot
-$tmp = Join-Path ([IO.Path]::GetTempPath()) "prosvet-engine"
+$tmp = Join-Path ([IO.Path]::GetTempPath()) "traverce-engine"
 Remove-Item -Recurse -Force $tmp -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Force $tmp | Out-Null
 
