@@ -34,12 +34,12 @@ class WindowsBackend implements Backend {
 
   @override
   Future<String?> unsupportedReason() async {
-    if (!Platform.isWindows) return 'Prosvet работает в Windows 10 и 11.';
+    if (!Platform.isWindows) return 'Traverce работает в Windows 10 и 11.';
     if (!File(paths.winws).existsSync()) {
-      return 'Не найдена папка engine рядом с программой. Переустановите Prosvet.';
+      return 'Не найдена папка engine рядом с программой. Переустановите Traverce.';
     }
     final admin = await shell.run('net.exe', ['session']);
-    if (!admin.ok) return 'Запустите Prosvet от имени администратора.';
+    if (!admin.ok) return 'Запустите Traverce от имени администратора.';
     return null;
   }
 
