@@ -93,18 +93,40 @@ jobs:
           & $iscc "/DMyAppVersion=$env:VERSION" "installer\traverce.iss"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-      - name: Smoke-test installer
+      - name: Smoke-test fresh install, upgrade migration and uninstall
         if: steps.release_check.outputs.exists != 'true'
         shell: pwsh
         run: |
+          $PSNativeCommandUseErrorActionPreference = $false
           $setup = Get-Item "installer\Output\Traverce-*-Setup.exe"
           $target = Join-Path $env:TEMP "TraverceReleaseSmoke"
+          New-Item -ItemType Directory -Force -Path $target | Out-Null
+
+          Set-Content -LiteralPath "$target\prosvet.exe" -Value "legacy" -Encoding ascii
+          & schtasks.exe /Create /TN "Prosvet" /TR "cmd.exe /c exit 0" /SC ONLOGON /F | Out-Null
+          if ($LASTEXITCODE -ne 0) { throw "could not create legacy autostart fixture" }
+
           Start-Process $setup.FullName -ArgumentList "/VERYSILENT","/NORESTART","/DIR=$target" -Wait
           if (-not (Test-Path "$target\traverce.exe")) { throw "installed executable is missing" }
           if (-not (Test-Path "$target\engine\winws2.exe")) { throw "installed engine is missing" }
+          if (Test-Path "$target\prosvet.exe") { throw "upgrade left the legacy executable behind" }
+
+          $taskXml = (& schtasks.exe /Query /TN "Prosvet" /XML | Out-String)
+          if ($LASTEXITCODE -ne 0) { throw "legacy autostart task disappeared during migration" }
+          if ($taskXml -notmatch [regex]::Escape("$target\traverce.exe")) {
+            throw "legacy autostart task was not retargeted to traverce.exe"
+          }
+          if ($taskXml -notmatch "--background") {
+            throw "migrated autostart task lost the background argument"
+          }
+
           $uninstall = Get-Item "$target\unins000.exe"
           Start-Process $uninstall.FullName -ArgumentList "/VERYSILENT","/NORESTART" -Wait
           if (Test-Path "$target\traverce.exe") { throw "uninstall left the executable behind" }
+
+          & schtasks.exe /Query /TN "Prosvet" *> $null
+          if ($LASTEXITCODE -eq 0) { throw "uninstall left the legacy autostart task behind" }
+          $global:LASTEXITCODE = 0
 
       - name: Package release
         if: steps.release_check.outputs.exists != 'true'
