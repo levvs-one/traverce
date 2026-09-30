@@ -12,7 +12,7 @@ class AppPaths {
   final String stateDir;
 
   String get settingsFile => p.join(stateDir, 'settings.json');
-  String get logFile => p.join(stateDir, 'prosvet.log');
+  String get logFile => p.join(stateDir, 'traverce.log');
   String get winws => p.join(engineDir, 'winws2.exe');
 
   static AppPaths resolve() {
