@@ -22,7 +22,12 @@ class Autostart {
 
   Future<void> _deleteIfPresent(String name, {bool bestEffort = false}) async {
     if (!await _exists(name)) return;
-    final result = await _shell.run('schtasks.exe', ['/Delete', '/TN', name, '/F']);
+    final result = await _shell.run('schtasks.exe', [
+      '/Delete',
+      '/TN',
+      name,
+      '/F',
+    ]);
     if (!result.ok && !bestEffort) {
       throw StateError(
         result.stderr.trim().isEmpty
