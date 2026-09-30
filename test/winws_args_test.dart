@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:prosvet/src/engine/zapret/strategies.dart';
-import 'package:prosvet/src/engine/zapret/winws_args.dart';
+import 'package:traverce/src/engine/zapret/strategies.dart';
+import 'package:traverce/src/engine/zapret/winws_args.dart';
 
 void main() {
   const launch = WinwsLaunch(
@@ -24,11 +24,11 @@ void main() {
   test('uses engine paths and per-network memory', () {
     final args = buildWinwsArgs(launch);
     expect(args, contains(r'--hostlist=C:\Prosvet\engine\lists\youtube.txt'));
-    expect(args, contains(r'--lua-init=@C:\Prosvet\engine\lua\prosvet.lua'));
+    expect(args, contains(r'--lua-init=@C:\Prosvet\engine\lua\traverce.lua'));
     expect(
       args,
       contains(
-        '--lua-desync=prosvet_circular:fails=3:nld=2:memo=v${strategyCatalogVersion}_abc123',
+        '--lua-desync=traverce_circular:fails=3:nld=2:memo=v${strategyCatalogVersion}_abc123',
       ),
     );
     expect(args.where((a) => a.startsWith('--new')), hasLength(3));
