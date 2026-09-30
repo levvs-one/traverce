@@ -1,4 +1,4 @@
-/// TLS strategies rotated by `prosvet_circular` for a host that is being
+/// TLS strategies rotated by `traverce_circular` for a host that is being
 /// blocked. Order matters: the most compatible and cheapest go first.
 ///
 /// Every entry is a list of zapret2 `--lua-desync` values for one strategy.
