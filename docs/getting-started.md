@@ -62,7 +62,7 @@ Get-FileHash .\Traverce-*-Setup.exe -Algorithm SHA256
 
 ## 6. Telegram Desktop
 
-Если Telegram включён в Traverceе:
+Если Telegram включён в Traverce:
 
 1. включите Traverce;
 2. нажмите **«Подключить Telegram Desktop»**;
@@ -75,7 +75,7 @@ Get-FileHash .\Traverce-*-Setup.exe -Algorithm SHA256
 
 Если ChatGPT, Gemini, Claude или другой Smart DNS-сервис не открывается, проверьте Secure DNS / DNS-over-HTTPS в браузере.
 
-Браузерный DoH может обходить Windows NRPT, поэтому системные правила Traverceа не будут использоваться.
+Браузерный DoH может обходить Windows NRPT, поэтому системные правила Traverce не будут использоваться.
 
 Подробности: [Диагностика](troubleshooting.md).
 
@@ -114,7 +114,7 @@ Uninstaller:
 
 - завершает `traverce.exe`;
 - удаляет задачу автозапуска;
-- удаляет NRPT-правила Traverceа;
+- удаляет NRPT-правила Traverce;
 - удаляет локальные данные из `%LOCALAPPDATA%\Traverce`.
 
 ## Где хранится журнал
