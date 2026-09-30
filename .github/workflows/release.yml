@@ -111,18 +111,14 @@ jobs:
           if (-not (Test-Path "$target\engine\winws2.exe")) { throw "installed engine is missing" }
           if (Test-Path "$target\prosvet.exe") { throw "upgrade left the legacy executable behind" }
 
-          $taskXml = (& schtasks.exe /Query /TN "Traverce" /XML | Out-String)
-          if ($LASTEXITCODE -ne 0) { throw "Traverce autostart task was not created during migration" }
+          $taskXml = (& schtasks.exe /Query /TN "Prosvet" /XML | Out-String)
+          if ($LASTEXITCODE -ne 0) { throw "legacy autostart task disappeared during migration" }
           if ($taskXml -notmatch [regex]::Escape("$target\traverce.exe")) {
-            throw "migrated autostart task does not point to traverce.exe"
+            throw "legacy autostart task was not retargeted to traverce.exe"
           }
           if ($taskXml -notmatch "--background") {
             throw "migrated autostart task lost the background argument"
           }
-
-          & schtasks.exe /Query /TN "Prosvet" *> $null
-          if ($LASTEXITCODE -eq 0) { throw "legacy autostart task still exists after migration" }
-          $global:LASTEXITCODE = 0
 
           $uninstall = Get-Item "$target\unins000.exe"
           Start-Process $uninstall.FullName -ArgumentList "/VERYSILENT","/NORESTART" -Wait
