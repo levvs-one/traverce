@@ -1,16 +1,16 @@
 # Диагностика
 
-Эта страница — первый маршрут, если Просвет включён, но сервис работает не так, как ожидалось.
+Эта страница — первый маршрут, если Traverce включён, но сервис работает не так, как ожидалось.
 
 ## Быстрая проверка
 
 Перед глубокой диагностикой:
 
-1. убедитесь, что нужный сервис включён в Просвете;
+1. убедитесь, что нужный сервис включён в Traverce;
 2. выключите второй VPN/zapret/WinDivert-клиент;
 3. для Smart DNS временно отключите Secure DNS / DoH в браузере;
 4. нажмите **Настройки → Сеть → Проверить сервисы**;
-5. перезапустите Просвет, если до этого он или Windows завершились аварийно.
+5. перезапустите Traverce, если до этого он или Windows завершились аварийно.
 
 ## Сервис отмечен красным
 
@@ -50,13 +50,13 @@ Smart DNS меняет сетевой маршрут только для выб�
 - VPN с packet filtering;
 - программу, которая отдельно использует WinDivert.
 
-После этого перезапустите Просвет и повторите проверку.
+После этого перезапустите Traverce и повторите проверку.
 
 ## Telegram не загружает медиа
 
 Убедитесь, что:
 
-1. Просвет включён;
+1. Traverce включён;
 2. Telegram выбран в списке сервисов;
 3. нажата кнопка **«Подключить Telegram Desktop»**;
 4. Telegram принял локальный proxy.
@@ -77,17 +77,17 @@ Smart DNS меняет сетевой маршрут только для выб�
 
 ## После сбоя остались сетевые правила
 
-Перезапустите Просвет с требуемыми правами: startup cleanup должен удалить собственные NRPT leftovers.
+Перезапустите Traverce с требуемыми правами: startup cleanup должен удалить собственные NRPT leftovers.
 
 Проверить оставшиеся правила можно в PowerShell:
 
 ```powershell
-Get-DnsClientNrptRule | Where-Object { $_.Comment -eq 'Prosvet' }
+Get-DnsClientNrptRule | Where-Object { $_.Comment -eq 'Traverce' }
 ```
 
-После штатного OFF собственных правил Просвета быть не должно.
+После штатного OFF собственных правил Traverce быть не должно.
 
-## Просвет не запускается повторно
+## Traverce не запускается повторно
 
 Приложение намеренно допускает только один системный экземпляр.
 
@@ -104,14 +104,14 @@ Get-DnsClientNrptRule | Where-Object { $_.Comment -eq 'Prosvet' }
 На диске:
 
 ```text
-%LOCALAPPDATA%\Prosvet\prosvet.log
+%LOCALAPPDATA%\Traverce\traverce.log
 ```
 
 ## Что приложить к issue
 
 Минимальный полезный набор:
 
-- версия Просвета;
+- версия Traverce;
 - Windows 10/11 и номер сборки;
 - провайдер и тип сети;
 - сервис;
@@ -129,4 +129,4 @@ Get-DnsClientNrptRule | Where-Object { $_.Comment -eq 'Prosvet' }
 - точный домашний адрес;
 - полный журнал, если в нём есть лишние приватные данные.
 
-Создать issue: **[github.com/levvs-one/zapret2/issues/new/choose](https://github.com/levvs-one/zapret2/issues/new/choose)**.
+Создать issue: **[github.com/levvs-one/traverce/issues/new/choose](https://github.com/levvs-one/traverce/issues/new/choose)**.

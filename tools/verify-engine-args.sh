@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Feeds the command line Prosvet builds for winws2 to the Linux build of the
+# Feeds the command line Traverce builds for winws2 to the Linux build of the
 # same zapret2 release (nfqws2 --dry-run). Both share the option parser, so
 # this catches typos in profiles, filters and Lua desync arguments.
 set -euo pipefail

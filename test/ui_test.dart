@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:prosvet/src/app.dart';
-import 'package:prosvet/src/core/controller.dart';
-import 'package:prosvet/src/core/settings.dart';
+import 'package:traverce/src/app.dart';
+import 'package:traverce/src/core/controller.dart';
+import 'package:traverce/src/core/settings.dart';
 
 import 'controller_test.dart' show FakeBackend;
 
@@ -16,7 +16,7 @@ void main() {
     );
     await c.init(connect: false);
     await tester.pumpWidget(
-      ProsvetApp(
+      TraverceApp(
         controller: c,
         autostart: null,
         logPath: '',
@@ -48,7 +48,7 @@ void main() {
     );
     await c.init(connect: false);
     await tester.pumpWidget(
-      ProsvetApp(
+      TraverceApp(
         controller: c,
         autostart: null,
         logPath: '',

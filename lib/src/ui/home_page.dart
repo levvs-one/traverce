@@ -25,7 +25,7 @@ class HomePage extends StatelessWidget {
         final c = controller;
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Просвет'),
+            title: const Text('Traverce'),
             actions: [
               IconButton(
                 tooltip: 'Настройки',

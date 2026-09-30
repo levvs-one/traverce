@@ -11,8 +11,8 @@ import 'ui/home_page.dart';
 import 'ui/settings_page.dart';
 import 'ui/theme.dart';
 
-class ProsvetApp extends StatefulWidget {
-  const ProsvetApp({
+class TraverceApp extends StatefulWidget {
+  const TraverceApp({
     super.key,
     required this.controller,
     required this.autostart,
@@ -30,10 +30,10 @@ class ProsvetApp extends StatefulWidget {
   final bool desktopShell;
 
   @override
-  State<ProsvetApp> createState() => _ProsvetAppState();
+  State<TraverceApp> createState() => _TraverceAppState();
 }
 
-class _ProsvetAppState extends State<ProsvetApp> with WindowListener {
+class _TraverceAppState extends State<TraverceApp> with WindowListener {
   Controller get c => widget.controller;
   bool _quitting = false;
 
@@ -103,7 +103,7 @@ class _ProsvetAppState extends State<ProsvetApp> with WindowListener {
       ..icon = tray.ImageAsset.fromAsset(
         on ? 'assets/tray_on.ico' : 'assets/tray_off.ico',
       )
-      ..setTooltip(on ? 'Просвет: включено' : 'Просвет: выключено');
+      ..setTooltip(on ? 'Traverce: включено' : 'Traverce: выключено');
     _toggleItem
       ?..label = on ? 'Выключить' : 'Включить'
       ..isEnabled = c.power == Power.on || c.power == Power.off;
@@ -143,7 +143,7 @@ class _ProsvetAppState extends State<ProsvetApp> with WindowListener {
       if (Platform.isWindows) {
         Process.run('rundll32.exe', [
           'url.dll,FileProtocolHandler',
-          'https://github.com/levvs-one/zapret2/issues/new/choose',
+          'https://github.com/levvs-one/traverce/issues/new/choose',
         ]);
       }
     },
@@ -152,7 +152,7 @@ class _ProsvetAppState extends State<ProsvetApp> with WindowListener {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Просвет',
+      title: 'Traverce',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),

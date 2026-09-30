@@ -27,7 +27,7 @@ body:
   - type: input
     id: version
     attributes:
-      label: Версия Просвета и Windows
+      label: Версия Traverceа и Windows
       placeholder: 0.2.0, Windows 11 24H2
     validations:
       required: true

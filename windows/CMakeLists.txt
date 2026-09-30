@@ -1,10 +1,10 @@
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
-project(prosvet LANGUAGES CXX)
+project(traverce LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
-set(BINARY_NAME "prosvet")
+set(BINARY_NAME "traverce")
 
 # Explicitly opt in to modern CMake behaviors to avoid warnings with recent
 # versions of CMake.
@@ -108,9 +108,9 @@ install(FILES "${AOT_LIBRARY}" DESTINATION "${INSTALL_BUNDLE_DATA_DIR}"
   COMPONENT Runtime)
 
 # zapret2 engine assembled by tools/fetch-engine.ps1.
-set(PROSVET_ENGINE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../build/engine")
-if(EXISTS "${PROSVET_ENGINE_DIR}/winws2.exe")
-  install(DIRECTORY "${PROSVET_ENGINE_DIR}/"
+set(TRAVERCE_ENGINE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../build/engine")
+if(EXISTS "${TRAVERCE_ENGINE_DIR}/winws2.exe")
+  install(DIRECTORY "${TRAVERCE_ENGINE_DIR}/"
     DESTINATION "${CMAKE_INSTALL_PREFIX}/engine"
     COMPONENT Runtime)
 else()

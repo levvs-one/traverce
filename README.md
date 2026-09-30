@@ -1,20 +1,20 @@
 <div align="center">
 
-<img src="assets/icon.png" width="96" alt="Просвет">
+<img src="assets/icon.png" width="96" alt="Traverce">
 
-# Просвет
+# Traverce
 
 **Точечный доступ к нужным сервисам без системного VPN.**  
 Windows-клиент поверх zapret2, Smart DNS и локального Telegram proxy.
 
-[![Release](https://img.shields.io/github/v/release/levvs-one/zapret2?label=release&style=flat-square)](https://github.com/levvs-one/zapret2/releases/latest)
-[![CI](https://img.shields.io/github/actions/workflow/status/levvs-one/zapret2/ci.yml?branch=main&label=CI&style=flat-square)](https://github.com/levvs-one/zapret2/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/levvs-one/traverce?label=release&style=flat-square)](https://github.com/levvs-one/traverce/releases/latest)
+[![CI](https://img.shields.io/github/actions/workflow/status/levvs-one/traverce/ci.yml?branch=main&label=CI&style=flat-square)](https://github.com/levvs-one/traverce/actions/workflows/ci.yml)
 ![Windows](https://img.shields.io/badge/Windows-10%20%2F%2011-0B57D0?style=flat-square&logo=windows11&logoColor=white)
 [![License](https://img.shields.io/badge/license-MIT-2f3136?style=flat-square)](LICENSE)
 
-**[Скачать последнюю версию](https://github.com/levvs-one/zapret2/releases/latest)** ·
+**[Скачать последнюю версию](https://github.com/levvs-one/traverce/releases/latest)** ·
 [Установка](docs/getting-started.md) ·
-[Чем отличается от zapret2](docs/prosvet-vs-zapret2.md) ·
+[Чем отличается от zapret2](docs/traverce-vs-zapret2.md) ·
 [FAQ](docs/faq.md) ·
 [Диагностика](docs/troubleshooting.md) ·
 [Поддержка](SUPPORT.md)
@@ -25,11 +25,9 @@ Windows-клиент поверх zapret2, Smart DNS и локального Tel
 
 ## Что это
 
-Просвет — не ещё одна папка с батниками и не общий VPN-туннель.
+Traverce — Windows-клиент, который объединяет три сетевых механизма под одним управляемым lifecycle. Он не создаёт общий VPN-туннель и применяет каждый механизм только к тем сервисам, для которых он нужен:
 
-Он даёт единый Windows-интерфейс для трёх разных механизмов и включает каждый только там, где он нужен:
-
-| Сервисы | Проблема | Что делает Просвет |
+| Сервисы | Проблема | Что делает Traverce |
 | --- | --- | --- |
 | **YouTube, Discord** | DPI / замедление / блокировка трафика | запускает zapret2 через WinDivert только для нужных доменов |
 | **ChatGPT, Gemini, Claude, Copilot, Spotify** | региональные ограничения на стороне сервиса | создаёт точечные Windows NRPT-правила и использует Smart DNS |
@@ -51,11 +49,11 @@ Windows-клиент поверх zapret2, Smart DNS и локального Tel
 ## Как выглядит
 
 <p align="center">
-  <img src="docs/off.png" width="29%" alt="Просвет выключен">
+  <img src="docs/off.png" width="29%" alt="Traverce выключен">
   &nbsp;&nbsp;
-  <img src="docs/on.png" width="29%" alt="Просвет включен">
+  <img src="docs/on.png" width="29%" alt="Traverce включен">
   &nbsp;&nbsp;
-  <img src="docs/settings.png" width="29%" alt="Настройки Просвета">
+  <img src="docs/settings.png" width="29%" alt="Настройки Traverce">
 </p>
 
 Интерфейс намеренно небольшой: состояние, список сервисов, диагностика и настройки. Сетевой движок не вываливается на пользователя десятками параметров.
@@ -64,19 +62,19 @@ Windows-клиент поверх zapret2, Smart DNS и локального Tel
 
 ## Скачать и установить
 
-Перейдите в **[GitHub Releases](https://github.com/levvs-one/zapret2/releases/latest)**.
+Перейдите в **[GitHub Releases](https://github.com/levvs-one/traverce/releases/latest)**.
 
 | Файл | Для кого |
 | --- | --- |
-| **`Prosvet-<version>-Setup.exe`** | обычная установка: меню Пуск, uninstall, нормальный lifecycle |
-| **`Prosvet-<version>-windows-x64.zip`** | portable-вариант без установки |
+| **`Traverce-<version>-Setup.exe`** | обычная установка: меню Пуск, uninstall, нормальный lifecycle |
+| **`Traverce-<version>-windows-x64.zip`** | portable-вариант без установки |
 | **`SHA256SUMS.txt`** | контрольные суммы релизных файлов |
 
 ### Быстрый старт
 
 1. Скачайте Setup из последнего релиза.
 2. При желании сверьте SHA-256 по `SHA256SUMS.txt`.
-3. Установите Просвет и запустите его.
+3. Установите Traverce и запустите его.
 4. Оставьте включёнными только нужные сервисы.
 5. Нажмите кнопку питания.
 6. Для Telegram один раз нажмите **«Подключить Telegram Desktop»**.
@@ -89,9 +87,9 @@ Windows-клиент поверх zapret2, Smart DNS и локального Tel
 
 ## Чем это отличается от обычного zapret2
 
-**zapret2 — низкоуровневый anti-DPI engine. Просвет — готовый Windows-продукт вокруг конкретных пользовательских сценариев.**
+**zapret2 — низкоуровневый anti-DPI engine. Traverce — готовый Windows-продукт вокруг конкретных пользовательских сценариев.**
 
-| | Просвет | zapret2 напрямую |
+| | Traverce | zapret2 напрямую |
 | --- | --- | --- |
 | Главная задача | открыть поддерживаемые сервисы без ручной настройки | дать максимальную гибкость для обхода DPI |
 | UI | готовое Windows-приложение | в основном CLI / конфигурация |
@@ -104,23 +102,23 @@ Windows-клиент поверх zapret2, Smart DNS и локального Tel
 | Роутеры / OpenWRT / BSD | нет | да, zapret2 рассчитан и на эти сценарии |
 
 Если вам нужны произвольные hostlist, свои Lua-стратегии, маршрутизатор или тонкая ручная настройка — используйте **zapret2 напрямую**.  
-Если нужно открыть несколько популярных сервисов на Windows и не заниматься ручной конфигурацией — для этого существует Просвет.
+Если нужно открыть несколько популярных сервисов на Windows и не заниматься ручной конфигурацией — для этого существует Traverce.
 
-Подробное сравнение: **[docs/prosvet-vs-zapret2.md](docs/prosvet-vs-zapret2.md)**.
+Подробное сравнение: **[docs/traverce-vs-zapret2.md](docs/traverce-vs-zapret2.md)**.
 
 ---
 
 ## Что меняется в Windows
 
-Просвет не устанавливает корневые сертификаты, браузерные расширения или собственную системную службу.
+Traverce не устанавливает корневые сертификаты, браузерные расширения или собственную системную службу.
 
 При включении он может:
 
 - запустить `winws2.exe` и WinDivert для DPI-сервисов;
 - создать NRPT-правила для выбранных Smart DNS доменов;
 - запустить локальный Telegram proxy на `127.0.0.1`;
-- создать задачу Task Scheduler `Prosvet`, если включён автозапуск;
-- хранить настройки и журнал в `%LOCALAPPDATA%\Prosvet`.
+- создать задачу Task Scheduler `Traverce`, если включён автозапуск;
+- хранить настройки и журнал в `%LOCALAPPDATA%\Traverce`.
 
 При выключении и удалении приложение старается убрать собственное системное состояние. После аварийного завершения cleanup повторяется при следующем запуске.
 
@@ -157,7 +155,7 @@ Windows-клиент поверх zapret2, Smart DNS и локального Tel
 - Telegram proxy ещё не подключён в Telegram Desktop;
 - антивирус блокирует WinDivert / `winws2.exe`.
 
-Если проблема остаётся, откройте **[Issue](https://github.com/levvs-one/zapret2/issues/new/choose)** и приложите версию Просвета, Windows, провайдера/тип сети и журнал.
+Если проблема остаётся, откройте **[Issue](https://github.com/levvs-one/traverce/issues/new/choose)** и приложите версию Traverce, Windows, провайдера/тип сети и журнал.
 
 ---
 
@@ -196,7 +194,7 @@ Release workflow публикует:
 | Документ | Что внутри |
 | --- | --- |
 | **[Установка](docs/getting-started.md)** | Setup, portable, SmartScreen, первый запуск, удаление |
-| **[Просвет vs zapret2](docs/prosvet-vs-zapret2.md)** | зачем нужен этот проект и где лучше использовать raw zapret2 |
+| **[Traverce vs zapret2](docs/traverce-vs-zapret2.md)** | зачем нужен этот проект и где лучше использовать raw zapret2 |
 | **[FAQ](docs/faq.md)** | VPN, регионы аккаунтов, Telegram, безопасность, обновления |
 | **[Диагностика](docs/troubleshooting.md)** | типовые проблемы и что приложить к issue |
 | **[Архитектура](docs/architecture.md)** | lifecycle и устройство движков |
@@ -237,7 +235,7 @@ flutter build windows --release
 
 ## Credits
 
-Просвет использует и развивает идеи нескольких open-source проектов:
+Traverce использует и развивает идеи нескольких open-source проектов:
 
 - **[bol-van/zapret2](https://github.com/bol-van/zapret2)** — DPI engine;
 - **[Flowseal/tg-ws-proxy](https://github.com/Flowseal/tg-ws-proxy)** — Telegram-over-WebSocket approach;
@@ -249,10 +247,10 @@ flutter build windows --release
 
 <div align="center">
 
-**Просвет** · Windows 10/11 · MIT License · no telemetry
+**Traverce** · Windows 10/11 · MIT License · no telemetry
 
-[Releases](https://github.com/levvs-one/zapret2/releases/latest) ·
-[Issues](https://github.com/levvs-one/zapret2/issues) ·
+[Releases](https://github.com/levvs-one/traverce/releases/latest) ·
+[Issues](https://github.com/levvs-one/traverce/issues) ·
 [Security](SECURITY.md) ·
 [Support](SUPPORT.md) ·
 [Changelog](CHANGELOG.md)

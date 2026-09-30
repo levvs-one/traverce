@@ -1,6 +1,6 @@
 # Выпуск новой версии
 
-Этот документ описывает release flow Просвета. Цель — чтобы релиз можно было повторить без ручной магии.
+Этот документ описывает release flow Traverce. Цель — чтобы релиз можно было повторить без ручной магии.
 
 ## 1. Подготовить версию
 
@@ -75,8 +75,8 @@ Release workflow запускается на push в `main`.
 
 GitHub Release содержит:
 
-- `Prosvet-<version>-Setup.exe`;
-- `Prosvet-<version>-windows-x64.zip`;
+- `Traverce-<version>-Setup.exe`;
+- `Traverce-<version>-windows-x64.zip`;
 - `SHA256SUMS.txt`.
 
 Release notes извлекаются из соответствующей секции `CHANGELOG.md`.

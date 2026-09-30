@@ -2,11 +2,12 @@
 ///
 /// NRPT sends queries for selected namespaces to selected DNS servers and
 /// leaves the rest of the system resolver untouched. Rules created by
-/// Prosvet are tagged with [nrptComment], so they can always be found and
+/// Traverce are tagged with [nrptComment], so they can always be found and
 /// removed, including after a crash.
 library;
 
-const nrptComment = 'Prosvet';
+const nrptComment = 'Traverce';
+const legacyNrptComment = 'Prosvet';
 
 String _psQuote(String s) => "'${s.replaceAll("'", "''")}'";
 
@@ -33,7 +34,8 @@ List<String> nrptNamespaces(Iterable<String> domains) {
 }
 
 String nrptRemoveScript() =>
-    'Get-DnsClientNrptRule | Where-Object { \$_.Comment -eq ${_psQuote(nrptComment)} } '
+    'Get-DnsClientNrptRule | Where-Object { '
+    '\$_.Comment -in ${_psArray([nrptComment, legacyNrptComment])} } '
     '| ForEach-Object { Remove-DnsClientNrptRule -Name \$_.Name -Force }';
 
 String nrptApplyScript({

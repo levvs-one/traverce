@@ -2,7 +2,7 @@
 
 ## zapret2
 
-Prosvet bundles `winws2.exe`, its runtime files and the Lua libraries
+Traverce bundles `winws2.exe`, its runtime files and the Lua libraries
 `zapret-lib.lua`, `zapret-antidpi.lua` and `zapret-auto.lua` from
 [bol-van/zapret2](https://github.com/bol-van/zapret2) v1.0.5.2 without
 changes. `engine/windivert/*.txt` are copied from

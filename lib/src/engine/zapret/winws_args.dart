@@ -53,7 +53,7 @@ List<String> buildWinwsArgs(WinwsLaunch l) {
       'zapret-lib.lua',
       'zapret-antidpi.lua',
       'zapret-auto.lua',
-      'prosvet.lua',
+      'traverce.lua',
     ])
       '--lua-init=@${engine('lua', lua)}',
 
@@ -64,7 +64,7 @@ List<String> buildWinwsArgs(WinwsLaunch l) {
     ...hostlists,
     '--out-range=-s34228',
     '--in-range=-s5556',
-    '--lua-desync=prosvet_circular:fails=3:nld=2:memo=$memo',
+    '--lua-desync=traverce_circular:fails=3:nld=2:memo=$memo',
     '--in-range=x',
     '--payload=tls_client_hello',
     for (var i = 0; i < tlsStrategies.length; i++)
