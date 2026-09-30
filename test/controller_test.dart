@@ -2,10 +2,10 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:prosvet/src/catalog/services.dart';
-import 'package:prosvet/src/core/backend.dart';
-import 'package:prosvet/src/core/controller.dart';
-import 'package:prosvet/src/core/settings.dart';
+import 'package:traverce/src/catalog/services.dart';
+import 'package:traverce/src/core/backend.dart';
+import 'package:traverce/src/core/controller.dart';
+import 'package:traverce/src/core/settings.dart';
 
 class FakeBackend implements Backend {
   final calls = <String>[];
@@ -243,7 +243,7 @@ void main() {
   });
 
   test('first settings load persists the generated Telegram secret', () {
-    final dir = Directory.systemTemp.createTempSync('prosvet-settings-');
+    final dir = Directory.systemTemp.createTempSync('traverce-settings-');
     addTearDown(() => dir.deleteSync(recursive: true));
     final file = '${dir.path}${Platform.pathSeparator}settings.json';
 
@@ -255,7 +255,7 @@ void main() {
   });
 
   test('older settings without a Telegram secret are migrated once', () {
-    final dir = Directory.systemTemp.createTempSync('prosvet-migrate-');
+    final dir = Directory.systemTemp.createTempSync('traverce-migrate-');
     addTearDown(() => dir.deleteSync(recursive: true));
     final file = '${dir.path}${Platform.pathSeparator}settings.json';
     File(file).writeAsStringSync(
@@ -271,7 +271,7 @@ void main() {
   });
 
   test('invalid existing settings are preserved instead of overwritten', () {
-    final dir = Directory.systemTemp.createTempSync('prosvet-corrupt-');
+    final dir = Directory.systemTemp.createTempSync('traverce-corrupt-');
     addTearDown(() => dir.deleteSync(recursive: true));
     final file = '${dir.path}${Platform.pathSeparator}settings.json';
     const original = '{"dnsProvider":123}';
