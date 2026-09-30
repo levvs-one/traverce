@@ -10,6 +10,8 @@
 
 namespace {
 
+// Keep the pre-0.3 namespace so Traverce cannot run concurrently with an
+// older Prosvet process during an in-place upgrade.
 constexpr wchar_t kSingleInstanceMutex[] = L"Global\\Prosvet.SingleInstance";
 constexpr wchar_t kReadyEvent[] = L"Global\\Prosvet.SingleInstance.Ready";
 constexpr wchar_t kWindowProperty[] = L"Prosvet.SingleInstance.Window";
