@@ -53,9 +53,9 @@ Name: "{group}\Удалить Traverce"; Filename: "{uninstallexe}"
 Filename: "{app}\{#MyAppExeName}"; Description: "Запустить Traverce"; Flags: nowait postinstall skipifsilent
 
 [UninstallRun]
-Filename: "{sys}\schtasks.exe"; Parameters: "/Delete /TN ""Traverce"" /F"; Flags: runhidden waituntilterminated
-Filename: "{sys}\schtasks.exe"; Parameters: "/Delete /TN ""Prosvet"" /F"; Flags: runhidden waituntilterminated
-Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; Parameters: "-NoProfile -ExecutionPolicy Bypass -Command ""$ErrorActionPreference='SilentlyContinue'; Get-DnsClientNrptRule | Where-Object {{ $_.Comment -in @('Traverce','Prosvet') } | ForEach-Object {{ Remove-DnsClientNrptRule -Name $_.Name -Force }; Clear-DnsClientCache"""; Flags: runhidden waituntilterminated
+Filename: "{sys}\schtasks.exe"; Parameters: "/Delete /TN ""Traverce"" /F"; Flags: runhidden waituntilterminated; RunOnceId: "RemoveTraverceTask"
+Filename: "{sys}\schtasks.exe"; Parameters: "/Delete /TN ""Prosvet"" /F"; Flags: runhidden waituntilterminated; RunOnceId: "RemoveLegacyTask"
+Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; Parameters: "-NoProfile -ExecutionPolicy Bypass -Command ""$ErrorActionPreference='SilentlyContinue'; Get-DnsClientNrptRule | Where-Object {{ $_.Comment -in @('Traverce','Prosvet') } | ForEach-Object {{ Remove-DnsClientNrptRule -Name $_.Name -Force }; Clear-DnsClientCache"""; Flags: runhidden waituntilterminated; RunOnceId: "RemoveTraverceNrpt"
 
 [UninstallDelete]
 Type: files; Name: "{app}\prosvet.exe"
