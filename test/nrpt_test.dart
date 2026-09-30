@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:prosvet/src/catalog/services.dart';
-import 'package:prosvet/src/engine/smartdns/nrpt.dart';
-import 'package:prosvet/src/engine/smartdns/provider.dart';
+import 'package:traverce/src/catalog/services.dart';
+import 'package:traverce/src/engine/smartdns/nrpt.dart';
+import 'package:traverce/src/engine/smartdns/provider.dart';
 
 void main() {
   test('Xbox DNS endpoints match the published IPv4 pair', () {
@@ -36,11 +36,11 @@ void main() {
   test('apply replaces tagged rules and flushes cache', () {
     final s = nrptApplyScript(domains: ['a.com'], servers: ['1.1.1.1']);
     final lines = s.split('\n');
-    expect(lines[1], contains("Comment -eq 'Prosvet'"));
+    expect(lines[1], contains("Comment -in @('Traverce','Prosvet')"));
     expect(
       lines[2],
       "Add-DnsClientNrptRule -Namespace @('.a.com','a.com') -NameServers @('1.1.1.1') "
-      "-Comment 'Prosvet' | Out-Null",
+      "-Comment 'Traverce' | Out-Null",
     );
     expect(lines.last, 'Clear-DnsClientCache');
   });
