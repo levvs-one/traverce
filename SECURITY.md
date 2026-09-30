@@ -1,6 +1,6 @@
 # Политика безопасности
 
-Просвет меняет системное сетевое состояние Windows и запускается с повышенными правами. Поэтому целостность релиза, корректный cleanup и предсказуемый lifecycle считаются частью безопасности продукта, а не только эксплуатационными деталями.
+Traverce меняет системное сетевое состояние Windows и запускается с повышенными правами. Поэтому целостность релиза, корректный cleanup и предсказуемый lifecycle считаются частью безопасности продукта, а не только эксплуатационными деталями.
 
 ## Поддерживаемые версии
 
@@ -28,7 +28,7 @@ GitHub Actions в workflow закрепляются по commit SHA.
 
 ## Системные инварианты
 
-Просвет проектируется так, чтобы:
+Traverce проектируется так, чтобы:
 
 1. системные изменения не выполнялись параллельно;
 2. завершённый `stop()` означал завершённый cleanup;
@@ -38,9 +38,9 @@ GitHub Actions в workflow закрепляются по commit SHA.
 6. только один экземпляр приложения управлял системным состоянием;
 7. uninstall удалял собственный autostart, NRPT и локальные данные.
 
-## Чего Просвет не делает
+## Чего Traverce не делает
 
-Просвет не является:
+Traverce не является:
 
 - антивирусом;
 - sandbox;
@@ -59,13 +59,13 @@ GitHub Actions в workflow закрепляются по commit SHA.
 Для проверки Setup:
 
 ```powershell
-Get-FileHash .\Prosvet-*-Setup.exe -Algorithm SHA256
+Get-FileHash .\Traverce-*-Setup.exe -Algorithm SHA256
 ```
 
 Для portable:
 
 ```powershell
-Get-FileHash .\Prosvet-*-windows-x64.zip -Algorithm SHA256
+Get-FileHash .\Traverce-*-windows-x64.zip -Algorithm SHA256
 ```
 
 Сравните значение со строкой из `SHA256SUMS.txt` соответствующего релиза.
@@ -78,7 +78,7 @@ Get-FileHash .\Prosvet-*-windows-x64.zip -Algorithm SHA256
 
 В первичном сообщении достаточно указать:
 
-- версию Просвета;
+- версию Traverceа;
 - версию Windows;
 - затронутый компонент;
 - ожидаемое и фактическое поведение;
@@ -87,7 +87,7 @@ Get-FileHash .\Prosvet-*-windows-x64.zip -Algorithm SHA256
 
 Если воспроизведение требует чувствительных данных, сначала свяжитесь с владельцем репозитория через GitHub и запросите приватный канал.
 
-Для обычных ошибок используйте **[Issue templates](https://github.com/levvs-one/zapret2/issues/new/choose)**.
+Для обычных ошибок используйте **[Issue templates](https://github.com/levvs-one/traverce/issues/new/choose)**.
 
 ## Особенно важные классы проблем
 
