@@ -103,7 +103,7 @@ jobs:
           New-Item -ItemType Directory -Force -Path $target | Out-Null
 
           Set-Content -LiteralPath "$target\prosvet.exe" -Value "legacy" -Encoding ascii
-          & schtasks.exe /Create /TN "Prosvet" /TR "cmd.exe /c exit 0" /SC ONLOGON /F | Out-Null
+          & schtasks.exe /Create /TN "Prosvet" /TR "cmd.exe /c exit 0" /SC ONLOGON /RU SYSTEM /RL HIGHEST /F | Out-Null
           if ($LASTEXITCODE -ne 0) { throw "could not create legacy autostart fixture" }
 
           Start-Process $setup.FullName -ArgumentList "/VERYSILENT","/NORESTART","/DIR=$target" -Wait
