@@ -5,11 +5,15 @@ import 'package:traverce/src/platform/shell.dart';
 class _FakeShell implements Shell {
   final calls = <({String executable, List<String> args})>[];
   final Map<String, ShellResult> results = {};
+  ShellResult? nextResult;
 
   @override
   Future<ShellResult> run(String executable, List<String> args) async {
     calls.add((executable: executable, args: List.of(args)));
-    return results['$executable ${args.join(' ')}'] ??
+    final result = nextResult;
+    nextResult = null;
+    return result ??
+        results['$executable ${args.join(' ')}'] ??
         const ShellResult(0, '', '');
   }
 
@@ -20,30 +24,33 @@ class _FakeShell implements Shell {
 }
 
 void main() {
-  test('autostart creates Traverce task and removes legacy Prosvet task', () async {
-    final shell = _FakeShell();
-    const exe = r'C:\Program Files\Traverce\traverce.exe';
-    final autostart = Autostart(shell, exe);
+  test(
+    'autostart creates Traverce task and removes legacy Prosvet task',
+    () async {
+      final shell = _FakeShell();
+      const exe = r'C:\Program Files\Traverce\traverce.exe';
+      final autostart = Autostart(shell, exe);
 
-    await autostart.setEnabled(true);
+      await autostart.setEnabled(true);
 
-    expect(shell.calls.first.args, [
-      '/Create',
-      '/TN',
-      'Traverce',
-      '/TR',
-      '"$exe" --background',
-      '/SC',
-      'ONLOGON',
-      '/RL',
-      'HIGHEST',
-      '/F',
-    ]);
-    expect(
-      shell.calls.any((c) => c.args.join(' ') == '/Delete /TN Prosvet /F'),
-      isTrue,
-    );
-  });
+      expect(shell.calls.first.args, [
+        '/Create',
+        '/TN',
+        'Traverce',
+        '/TR',
+        '"$exe" --background',
+        '/SC',
+        'ONLOGON',
+        '/RL',
+        'HIGHEST',
+        '/F',
+      ]);
+      expect(
+        shell.calls.any((c) => c.args.join(' ') == '/Delete /TN Prosvet /F'),
+        isTrue,
+      );
+    },
+  );
 
   test('autostart disable clears current and legacy tasks', () async {
     final shell = _FakeShell();
@@ -70,9 +77,8 @@ void main() {
   });
 
   test('autostart surfaces Task Scheduler create errors', () async {
-    final shell = _FakeShell();
-    shell.results['schtasks.exe /Create /TN Traverce /TR "C:\\Traverce\\traverce.exe" --background /SC ONLOGON /RL HIGHEST /F'] =
-        const ShellResult(1, '', 'access denied');
+    final shell = _FakeShell()
+      ..nextResult = const ShellResult(1, '', 'access denied');
     final autostart = Autostart(shell, r'C:\Traverce\traverce.exe');
 
     expect(
