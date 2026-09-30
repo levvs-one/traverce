@@ -5,16 +5,20 @@ import 'package:traverce/src/platform/shell.dart';
 class _FakeShell implements Shell {
   final calls = <({String executable, List<String> args})>[];
   final Map<String, ShellResult> results = {};
-  ShellResult? nextResult;
+  ShellResult? forcedResult;
 
   @override
   Future<ShellResult> run(String executable, List<String> args) async {
     calls.add((executable: executable, args: List.of(args)));
-    final result = nextResult;
-    nextResult = null;
-    return result ??
-        results['$executable ${args.join(' ')}'] ??
-        const ShellResult(0, '', '');
+
+    final forced = forcedResult;
+    if (forced != null) {
+      forcedResult = null;
+      return forced;
+    }
+
+    final key = '$executable ${args.join(' ')}';
+    return results[key] ?? const ShellResult(0, '', '');
   }
 
   @override
@@ -24,42 +28,45 @@ class _FakeShell implements Shell {
 }
 
 void main() {
-  test(
-    'autostart creates Traverce task and removes legacy Prosvet task',
-    () async {
-      final shell = _FakeShell();
-      const exe = r'C:\Program Files\Traverce\traverce.exe';
-      final autostart = Autostart(shell, exe);
+  test('creates Traverce task and removes legacy task', () async {
+    final shell = _FakeShell();
+    const exe = r'C:\Program Files\Traverce\traverce.exe';
+    final autostart = Autostart(shell, exe);
 
-      await autostart.setEnabled(true);
+    await autostart.setEnabled(true);
 
-      expect(shell.calls.first.args, [
-        '/Create',
-        '/TN',
-        'Traverce',
-        '/TR',
-        '"$exe" --background',
-        '/SC',
-        'ONLOGON',
-        '/RL',
-        'HIGHEST',
-        '/F',
-      ]);
-      expect(
-        shell.calls.any((c) => c.args.join(' ') == '/Delete /TN Prosvet /F'),
-        isTrue,
-      );
-    },
-  );
+    expect(shell.calls.first.args, [
+      '/Create',
+      '/TN',
+      'Traverce',
+      '/TR',
+      '"$exe" --background',
+      '/SC',
+      'ONLOGON',
+      '/RL',
+      'HIGHEST',
+      '/F',
+    ]);
 
-  test('autostart disable clears current and legacy tasks', () async {
+    final deletedLegacy = shell.calls.any(
+      (call) => call.args.join(' ') == '/Delete /TN Prosvet /F',
+    );
+    expect(deletedLegacy, isTrue);
+  });
+
+  test('disable clears current and legacy tasks', () async {
     final shell = _FakeShell();
     final autostart = Autostart(shell, r'C:\Traverce\traverce.exe');
 
     await autostart.setEnabled(false);
 
+    final deletes = shell.calls
+        .where((call) => call.args.first == '/Delete')
+        .map((call) => call.args)
+        .toList();
+
     expect(
-      shell.calls.where((c) => c.args.first == '/Delete').map((c) => c.args),
+      deletes,
       containsAll([
         ['/Delete', '/TN', 'Traverce', '/F'],
         ['/Delete', '/TN', 'Prosvet', '/F'],
@@ -67,18 +74,18 @@ void main() {
     );
   });
 
-  test('isEnabled recognizes legacy task during upgrade', () async {
+  test('legacy task is recognized during upgrade', () async {
     final shell = _FakeShell();
-    shell.results['schtasks.exe /Query /TN Traverce'] =
-        const ShellResult(1, '', 'not found');
+    const currentQuery = 'schtasks.exe /Query /TN Traverce';
+    shell.results[currentQuery] = const ShellResult(1, '', 'not found');
     final autostart = Autostart(shell, r'C:\Traverce\traverce.exe');
 
     expect(await autostart.isEnabled(), isTrue);
   });
 
-  test('autostart surfaces Task Scheduler create errors', () async {
-    final shell = _FakeShell()
-      ..nextResult = const ShellResult(1, '', 'access denied');
+  test('create errors are surfaced', () async {
+    final shell = _FakeShell();
+    shell.forcedResult = const ShellResult(1, '', 'access denied');
     final autostart = Autostart(shell, r'C:\Traverce\traverce.exe');
 
     expect(
