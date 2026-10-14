@@ -141,7 +141,7 @@ jobs:
           $bundle = "build/windows/x64/runner/Release"
           Copy-Item LICENSE,THIRD_PARTY_NOTICES.md $bundle
           Compress-Archive -Path "$bundle/*" -DestinationPath "Traverce-$version-windows-x64.zip"
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: Traverce-windows-x64
           path: |
@@ -173,7 +173,7 @@ jobs:
           echo "TRAVERCE_ICON_FONT=$icons" >> "$GITHUB_ENV"
       - name: Render UI reference snapshots
         run: flutter test tool/render_docs_test.dart
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: traverce-ui-snapshots
           path: |
