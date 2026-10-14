@@ -13,7 +13,7 @@ dependencies:
     sdk: flutter
   path: ^1.9.1
   pointycastle: ^4.0.0
-  tray_manager: ^0.7.0
+  tray_manager: ^0.8.0
   window_manager: ^0.5.2
 
 dev_dependencies:
